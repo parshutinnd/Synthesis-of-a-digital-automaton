@@ -11,28 +11,16 @@ type Perceptron struct {
 
 	Out Matrix
 
+	layerOne []int
+
+	layerTwo []int
+
+	layerThree []int
+
 	check map[string]string
 }
 
-func (perceptron *Perceptron) PerceptronGetRan(inputSize int, outputSize int) {
-
-	perceptron.One.RandomGetmat(4, inputSize)
-
-	perceptron.Two.RandomGetmat(4, inputSize+4)
-
-	perceptron.Out.RandomGetmat(outputSize, inputSize+8)
-
-	perceptron.check["000"] = "00"
-	perceptron.check["001"] = "01"
-	perceptron.check["010"] = "10"
-	perceptron.check["011"] = "11"
-	perceptron.check["100"] = "00"
-	perceptron.check["101"] = "01"
-	perceptron.check["110"] = "10"
-	perceptron.check["111"] = "11"
-}
-
-func Activate(weight Matrix, values Vector) Vector {
+func Activate(weight Matrix, values Vector, neurons []int) Vector {
 
 	var bias Vector
 	bias.Size = weight.N
@@ -56,12 +44,22 @@ func Activate(weight Matrix, values Vector) Vector {
 
 	for i := range bias.Data {
 
-		if result.Data[i] >= bias.Data[i] {
-			result.Data[i] = 0
-			result.StringView += "0"
+		if neurons[i] == 1 {
+			if result.Data[i] >= bias.Data[i] {
+				result.Data[i] = 0
+				result.StringView += "0"
+			} else {
+				result.Data[i] = 1
+				result.StringView += "1"
+			}
 		} else {
-			result.Data[i] = 1
-			result.StringView += "1"
+			if result.Data[i]%2 == 1 {
+				result.Data[i] = 0
+				result.StringView += "0"
+			} else {
+				result.Data[i] = 1
+				result.StringView += "1"
+			}
 		}
 
 	}
@@ -73,15 +71,15 @@ func Activate(weight Matrix, values Vector) Vector {
 func (perceptron *Perceptron) PerceptronAction(input Vector) Vector {
 
 	//first layer
-	valuesonOne := Activate(perceptron.One, input)
+	valuesonOne := Activate(perceptron.One, input, perceptron.layerOne)
 
 	//second layer
 	valuestoTwo := VecConcat(input, valuesonOne)
-	valuesonTwo := Activate(perceptron.Two, valuestoTwo)
+	valuesonTwo := Activate(perceptron.Two, valuestoTwo, perceptron.layerTwo)
 
 	//out Layer
 	valuestoOut := VecConcat(input, valuesonOne, valuesonTwo)
-	valuesonOut := Activate(perceptron.Out, valuestoOut)
+	valuesonOut := Activate(perceptron.Out, valuestoOut, perceptron.layerThree)
 
 	return valuesonOut
 }
@@ -109,15 +107,24 @@ func (perceptron *Perceptron) PerceptronError() float64 {
 	return err
 }
 
-func (perceptron *Perceptron) PerceptronGet(inputSize int, outputSize int, code []int) {
+func (perceptron *Perceptron) PerceptronGet(code []int) {
 
-	borderOne := 4 * inputSize
-	perceptron.One.GetMat(4, inputSize, code[0:borderOne])
+	var inputSize = 3
+	var outputSize = 2
+
+	var weightsBorder = 8 + outputSize
+
+	borderOne := 4*inputSize + weightsBorder
+	perceptron.One.GetMat(4, inputSize, code[weightsBorder:borderOne])
 
 	borderTwo := 4*(inputSize+4) + borderOne
 	perceptron.Two.GetMat(4, inputSize+4, code[borderOne:borderTwo])
 
 	perceptron.Out.GetMat(outputSize, inputSize+8, code[borderTwo:])
+
+	perceptron.layerOne = code[:4]
+	perceptron.layerTwo = code[4:8]
+	perceptron.layerThree = code[8:weightsBorder]
 
 	perceptron.check = make(map[string]string)
 
@@ -129,4 +136,5 @@ func (perceptron *Perceptron) PerceptronGet(inputSize int, outputSize int, code 
 	perceptron.check["101"] = "10"
 	perceptron.check["110"] = "10"
 	perceptron.check["111"] = "11"
+
 }

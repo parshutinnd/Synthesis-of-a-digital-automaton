@@ -25,7 +25,7 @@ func mutation(generation []structs.Individual) []structs.Individual {
 
 		var perceptron neuralnetwork.Perceptron
 
-		perceptron.PerceptronGet(3, 2, result[i].Code.Data)
+		perceptron.PerceptronGet(result[i].Code.Data)
 
 		result[i].Fitness = perceptron.PerceptronError()
 	}

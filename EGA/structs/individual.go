@@ -16,7 +16,7 @@ func (individual *Individual) GetIndividual(code []int) {
 
 	var perceptron perceptron.Perceptron
 
-	perceptron.PerceptronGet(3, 2, code)
+	perceptron.PerceptronGet(code)
 
 	individual.Fitness = perceptron.PerceptronError()
 

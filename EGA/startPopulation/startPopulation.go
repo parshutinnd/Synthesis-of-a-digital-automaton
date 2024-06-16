@@ -6,7 +6,7 @@ import (
 	"sort"
 )
 
-func CreateStartpopulation(size int) []structs.Individual {
+func CreateStartpopulation(size, inputSize, outputSize int) []structs.Individual {
 
 	result := make([]structs.Individual, size)
 
@@ -14,7 +14,7 @@ func CreateStartpopulation(size int) []structs.Individual {
 
 		var code []int
 
-		for i := 0; i < 62; i++ {
+		for i := 0; i < 8+outputSize+outputSize*(inputSize+8)+4*(inputSize+4)+4*inputSize; i++ {
 			code = append(code, rand.Intn(2))
 		}
 

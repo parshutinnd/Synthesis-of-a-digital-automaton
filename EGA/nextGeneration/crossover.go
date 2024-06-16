@@ -42,8 +42,8 @@ func crossover(vector1, vector2 structs.Individual) (structs.Individual, structs
 
 	var perceptron1, perceptron2 perceptron.Perceptron
 
-	perceptron1.PerceptronGet(3, 2, result1.Code.Data)
-	perceptron2.PerceptronGet(3, 2, ressult2.Code.Data)
+	perceptron1.PerceptronGet(result1.Code.Data)
+	perceptron2.PerceptronGet(ressult2.Code.Data)
 
 	result1.Fitness = perceptron1.PerceptronError()
 	ressult2.Fitness = perceptron2.PerceptronError()
